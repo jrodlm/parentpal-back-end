@@ -6,6 +6,10 @@ const mongoose = require('mongoose');
 const logger = require('morgan');
 
 mongoose.connect(process.env.MONGODB_URI);
+mongoose.connection.on('error', (err) => {
+  console.error(`MongoDB connection error: ${err}`);
+});
+
 
 mongoose.connection.on('connected', () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
@@ -14,7 +18,11 @@ mongoose.connection.on('connected', () => {
 app.use(express.json());
 app.use(logger('dev'));
 
-// Routes go here
+// Routes go here 
+
+const testRoutes = require('./routes/test');
+app.use('/api/test', testRoutes);
+
 
 app.listen(3000, () => {
   console.log('The express app is ready!');
