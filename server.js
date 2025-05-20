@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const logger = require('morgan');
+const cors = require('cors');
 const User = require('./models/User');
 const Child = require('./models/Child');
 const ActivityLog = require('./models/ActivityLog');
@@ -14,31 +15,20 @@ mongoose.connection.on('error', (err) => {
 });
 
 
-mongoose.connection.on('connected', async () => {
+mongoose.connection.on('connected', () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
-
-  try {
-    const testUser = await User.create({
-      name: 'Test User',
-      email: 'test11@example.com',
-      passwordHash: 'hashedpassword123',
-    });
-
-        console.log('✅ User created:', testUser);
-  } catch (error) {
-    console.error('❌ Error creating user:', error.message);
-  }
 });
+
 
 console.log('Working models:', {User, Child, ActivityLog});
 
 app.use(express.json());
+app.use(cors());
 app.use(logger('dev'));
 
 // Routes go here 
-
-const testRoutes = require('./routes/test');
-app.use('/api/test', testRoutes);
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes);
 
 
 app.listen(3000, () => {
