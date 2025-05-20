@@ -7,6 +7,9 @@ const logger = require('morgan');
 const User = require('./models/User');
 const Child = require('./models/Child');
 const ActivityLog = require('./models/ActivityLog');
+const activityRoute = require('./routes/activityLogs');
+
+app.use('/api/activitylogs', activityRoutes),
 
 mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.on('error', (err) => {
