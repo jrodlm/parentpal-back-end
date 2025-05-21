@@ -42,7 +42,6 @@ const childRoutes = require('./routes/children');
 app.use('/api/children', childRoutes);
 
 
-
 app.listen(3000, () => {
   console.log('The express app is ready!');
 });
