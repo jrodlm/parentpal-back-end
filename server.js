@@ -5,13 +5,17 @@ const app = express();
 const mongoose = require('mongoose');
 const logger = require('morgan');
 const cors = require('cors');
+
+// APP SCHEMA REFERENCES
 const User = require('./models/User');
 const Child = require('./models/Child');
 const ActivityLog = require('./models/ActivityLog');
-const activityRoute = require('./routes/activityLogs');
 
-app.use('/api/activitylogs', activityRoutes),
+//ROUTES
+const activityRoutes = require('./routes/activityLogs');
+app.use('/api/activitylogs', activityRoutes);
 
+// DATABASE CONNECTION
 mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.on('error', (err) => {
   console.error(`MongoDB connection error: ${err}`);
@@ -25,6 +29,7 @@ mongoose.connection.on('connected', () => {
 
 console.log('Working models:', {User, Child, ActivityLog});
 
+// EXPRESS MIDDLEWARE
 app.use(express.json());
 app.use(cors());
 app.use(logger('dev'));
@@ -32,6 +37,10 @@ app.use(logger('dev'));
 // Routes go here 
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
+
+const childRoutes = require('./routes/children');
+app.use('/api/children', childRoutes);
+
 
 
 app.listen(3000, () => {
