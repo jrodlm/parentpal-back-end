@@ -5,15 +5,12 @@ const app = express();
 const mongoose = require('mongoose');
 const logger = require('morgan');
 const cors = require('cors');
+const PORT = process.env.PORT || 3000;
 
-// APP SCHEMA REFERENCES
-const User = require('./models/User');
-const Child = require('./models/Child');
-const ActivityLog = require('./models/ActivityLog');
-
-//ROUTES
-const activityRoutes = require('./routes/activityLogs');
-app.use('/api/activitylogs', activityRoutes);
+// ROUTES 
+const activityController = require('./controllers/activities');
+// const authController = require('./controllers/auth');
+const childController = require('./controllers/children');
 
 // DATABASE CONNECTION
 mongoose.connect(process.env.MONGODB_URI);
@@ -21,26 +18,30 @@ mongoose.connection.on('error', (err) => {
   console.error(`MongoDB connection error: ${err}`);
 });
 
-
 mongoose.connection.on('connected', () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
 
-
-console.log('Working models:', {User, Child, ActivityLog});
 
 // EXPRESS MIDDLEWARE
 app.use(express.json());
 app.use(cors());
 app.use(logger('dev'));
 
-// Routes go here 
-const authRoutes = require('./routes/auth');
-app.use('/api/auth', authRoutes);
+app.use(cors({origin: 'http://localhost:5173'}));
+mongoose.connect(process.env.MONGODB_URI);
 
-const childRoutes = require('./routes/children');
-app.use('/api/children', childRoutes);
+mongoose.connection.on('connected', () => {
+  console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
+});
 
+app.use(express.json());
+app.use(logger('dev'));
+
+// Routes go here
+app.use('/child', childController);
+// app.use('/auth', authController);
+app.use('/activity', activityController);
 
 app.listen(3000, () => {
   console.log('The express app is ready!');

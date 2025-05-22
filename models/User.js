@@ -2,9 +2,19 @@ const mongoose = require('mongoose');
 const bycrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  passwordHash: { type: String, required: true },
+  name: { 
+    type: String, 
+    required: true 
+  },
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true 
+  },
+  passwordHash: { 
+    type: String, 
+    required: true 
+  },
 }, { timestamps: true });
 
 userSchema.methods.comparePassword = async function (password) {
