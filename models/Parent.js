@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const bycrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema({
+const parentSchema = new mongoose.Schema({
   name: { 
     type: String, 
     required: true 
@@ -15,10 +14,14 @@ const userSchema = new mongoose.Schema({
     type: String, 
     required: true 
   },
-}, { timestamps: true });
+});
 
-userSchema.methods.comparePassword = async function (password) {
-  return await bycrypt.compare(password, this.passwordHash);
-}
+parentSchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+        delete returnedObject.hashedPassword
+    }
+})
 
-module.exports = mongoose.model('User', userSchema);
+const Parent = mongoose.model('Parent', parentSchema)
+
+module.exports = Parent

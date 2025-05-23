@@ -14,7 +14,7 @@ const childSchema = new mongoose.Schema({
   },
   gender: { 
     type: String, 
-    enum: ['boy', 'girl', 'other'] 
+    enum: ['boy', 'girl'] 
   },
 })
 

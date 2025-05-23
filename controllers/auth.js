@@ -1,36 +1,56 @@
-// const User = require('../models/User');
-// const bcrypt = require('bcryptjs');
-// const jwt = require('jsonwebtoken');
+const express = require('express')
+const router = express.Router()
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
-// // Secret key from your .env
-// const JWT_SECRET = process.env.JWT_SECRET;
+const User = require('../models/user')
 
-// // LOGIN
-// exports.login = async (req, res) => {
-//   const { email, password } = req.body;
+const saltedRounds = 12;
 
-//   try {
-//     const user = await User.findOne({ email });
-//     if (!user) return res.status(401).json({ error: 'Invalid email or password' });
+router.post('/sign-up', async (req, res) => {
+    try {
+        const userInDatabase = await User.findOne({ username: req.body.username })
 
-//     const isMatch = await user.comparePassword(password);
-//     if (!isMatch) return res.status(401).json({ error: 'Invalid email or password' });
+        if(userInDatabase) {
+            return res.status(409).json({err: 'Username already exists'})
+        }
 
-//     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1d' });
-//     res.json({ token });
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// };
+        const user = await User.create({
+            username: req.body.username,
+            hashedPassword: bcrypt.hashSync(req.body.password, saltedRounds)
+        })
 
-// // SIGNUP (Optional)
-// exports.signup = async (req, res) => {
-//   try {
-//     const { name, email, password } = req.body;
-//     const passwordHash = await bcrypt.hash(password, 10);
-//     const user = await User.create({ name, email, passwordHash });
-//     res.status(201).json({ message: 'User created successfully' });
-//   } catch (err) {
-//     res.status(400).json({ error: err.message });
-//   }
-// };
+        const payload = { username: user.username, _id: user._id}
+
+        const token = jwt.sign({ payload }, process.env.JWT_SECRET)
+
+        res.status(201).json({ token })
+    } catch (err) {
+        res.status(401).json({err: err.message})
+    }
+})
+
+router.post('/sign-in', async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.body.username })
+        if(!user) {
+            return res.status(401).json({err: 'invalid credentials'})
+        }
+
+        const isPasswordCorrect = bcrypt.compareSync(req.body.password, user.hashedPassword)
+
+        if(!isPasswordCorrect) {
+            return res.status(401).json({err: 'invalid credentials'})
+        }
+
+        const payload = { username: user.username, _id: user._id }
+
+        const token = jwt.sign({ payload }, process.env.JWT_SECRET)
+
+        res.status(200).json({ token })
+    } catch (err) {
+        res.status(500).json({err: err.message})
+    }
+})
+
+module.exports = router;
