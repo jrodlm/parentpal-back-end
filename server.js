@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 
 // ROUTES 
 const activityController = require('./controllers/activities');
-// const authController = require('./controllers/auth');
+const authController = require('./controllers/auth');
 const childController = require('./controllers/children');
 
 // DATABASE CONNECTION
@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(cors());
 app.use(logger('dev'));
 
-app.use(cors({origin: 'http://localhost:5173'}));
+app.use(cors());
 mongoose.connect(process.env.MONGODB_URI);
 
 mongoose.connection.on('connected', () => {
@@ -40,7 +40,7 @@ app.use(logger('dev'));
 
 // Routes go here
 app.use('/child', childController);
-// app.use('/auth', authController);
+app.use('/auth', authController);
 app.use('/activity', activityController);
 
 app.listen(3000, () => {

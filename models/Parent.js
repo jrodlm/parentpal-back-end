@@ -1,16 +1,11 @@
 const mongoose = require('mongoose');
 
 const parentSchema = new mongoose.Schema({
-  name: { 
+  username: { 
     type: String, 
     required: true 
   },
-  email: { 
-    type: String, 
-    required: true, 
-    unique: true 
-  },
-  passwordHash: { 
+  hashedPassword: { 
     type: String, 
     required: true 
   },
