@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const childSchema = new mongoose.Schema({
   parentId: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', required: true 
+    ref: 'User', 
+    required: true 
   },
   name: { 
     type: String, 
@@ -14,7 +15,8 @@ const childSchema = new mongoose.Schema({
   },
   gender: { 
     type: String, 
-    enum: ['boy', 'girl'] 
+    enum: ['boy', 'girl'],
+    required: true
   },
 })
 

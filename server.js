@@ -39,7 +39,7 @@ app.use(express.json());
 app.use(logger('dev'));
 
 // Routes go here
-app.use('/child', childController);
+app.use('/children', childController);
 app.use('/auth', authController);
 app.use('/activity', activityController);
 

@@ -1,26 +1,28 @@
 const Child = require('../models/Child')
 const express = require('express')
+const verifyToken = require('../middleware/verify-token')
 const router = express.Router()
 
+
 // create
-router.post('/', async (req, res) => {
+router.post('/', verifyToken, async (req, res) => {
     try {
-        const createdChild = await Child.create(req.body)
-        res.status(201).json(createdChild)
+        const createdChild = await Child.create({...req.body, parentId: req.user._id});
+        console.log("REQ.BODY in POST /children:", req.body);
     } catch (err) {
         res.status(500).json({ err: err.message })
     }
 })
 
 // index
-router.get('/', async (req, res) => {
-    try {
-        const foundChildren = await Child.find();
-        res.status(200).json(foundChildren)
-    } catch (err) {
-        res.status(500).json({err: err.message})
-    }
-})
+router.get('/', verifyToken, async (req, res) => {
+  try {
+    const foundChildren = await Child.find({ parentId: req.user._id });
+    res.status(200).json(foundChildren);
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+});
 
 // show
 router.get('/:childId', async (req, res) => {
