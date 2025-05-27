@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
-const activityLogSchema = new mongoose.Schema({
+const activitySchema = new mongoose.Schema({
   childId: { type: mongoose.Schema.Types.ObjectId, ref: 'Child', required: true }, // this would be the name right? 
-  activityType: { type: String, required: true },
+  enum: ['Nap', 'Meal', 'Snack', 'Potty', 'Play', 'Activity', 'Education', 'Other'],
   note: { type: String },
   date: { type: Date, default: Date.now },
-}, { timestamps: true }); // I don't think we need this? 
+}, { timestamps: true }); 
 
-module.exports = mongoose.model('ActivityLog', activityLogSchema);
+module.exports = mongoose.model('Activity', activitySchema);

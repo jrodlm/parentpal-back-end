@@ -2,7 +2,7 @@ const Activity = require('../models/Activity')
 const express = require('express')
 const router = express.Router()
 
-// create
+// CREATE AN ACTIVITY
 router.post('/', async (req, res) => {
     try {
         const createdActivity = await Activity.create(req.body)
@@ -12,17 +12,28 @@ router.post('/', async (req, res) => {
     }
 })
 
-// index
+// INDEX - SHOW ALL ACTIVITIES
 router.get('/', async (req, res) => {
     try {
         const foundActivities = await Activity.find();
-        res.status(200).json(foundActvities)
+        res.status(200).json(foundActivities)
     } catch (err) {
         res.status(500).json({err: err.message})
     }
 })
 
-// show
+// SHOW A SPECIFIC CHILD'S ACTIVITIES
+router.get('/child/:childId', async (req, res) => {
+  try {
+    const childActivities = await Activity.find({ childId: req.params.childId });
+    res.status(200).json(childActivities);
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+});
+
+
+//SHOW ACTIVITIES
 router.get('/:activityId', async (req, res) => {
     try {
         const foundActivity = await Activity.findById(req.params.activityId)
@@ -40,7 +51,7 @@ router.get('/:activityId', async (req, res) => {
     }
 })
 
- delete
+ // DELETE AN ACTIVITY
 router.delete('/:activityId', async (req, res) => {
     try {
         const deletedActivity = await Activity.findByIdAndDelete(req.params.activityId)
@@ -58,7 +69,7 @@ router.delete('/:activityId', async (req, res) => {
     }
 })
 
-// update
+// UPDATE AN ACTIVITY
 router.put('/:activityId', async (req, res) => {
     try {
         const updatedActivity = await Activity.findByIdAndUpdate(req.params.activityId, req.body, {new: true})
