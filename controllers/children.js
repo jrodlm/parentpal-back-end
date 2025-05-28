@@ -8,16 +8,16 @@ const router = express.Router()
 router.post('/', verifyToken, async (req, res) => {
     try {
         const createdChild = await Child.create({...req.body, parentId: req.user._id});
-        console.log("REQ.BODY in POST /children:", req.body);
+        res.status(201).json(createdChild)
     } catch (err) {
         res.status(500).json({ err: err.message })
     }
 })
 
 // index
-router.get('/', verifyToken, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const foundChildren = await Child.find({ parentId: req.user._id });
+    const foundChildren = await Child.find({  });
     res.status(200).json(foundChildren);
   } catch (err) {
     res.status(500).json({ err: err.message });
